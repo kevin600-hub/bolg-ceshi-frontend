@@ -5,7 +5,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    // 部署到 Vercel 后，我们在后台设置这个地址指向 Render 后端
+    // 逻辑保持不变：部署到 Vercel 后，我们在后台设置这个地址指向 Render 后端
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     
     fetch(`${apiBaseUrl}/api/posts`)
@@ -15,44 +15,68 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-zinc-100 p-8 flex flex-col items-center selection:bg-amber-500 selection:text-black">
-      <div className="max-w-3xl w-full">
-        <header className="mb-16 border-l-4 border-amber-500 pl-6">
-          <h1 className="text-6xl font-black text-white tracking-tighter">
-            SCRIPT <span className="text-amber-500">LION</span>
+    // 极简改动：背景改为极浅灰（zinc-50），文字主色调改为深灰（zinc-900）
+    <main className="min-h-screen bg-[#fafafa] text-zinc-900 p-8 flex flex-col items-center selection:bg-zinc-200">
+      <div className="max-w-2xl w-full py-20">
+        
+        {/* Header 改为中心对齐，极简主义标题 */}
+        <header className="mb-24 text-center">
+          <h1 className="text-4xl font-light tracking-[0.2em] text-zinc-900 uppercase">
+            Script <span className="font-bold">Lion</span>
           </h1>
-          <p className="text-zinc-500 font-mono text-sm mt-2 uppercase tracking-[0.3em]">
+          <div className="h-px w-12 bg-zinc-300 mx-auto mt-6"></div>
+          <p className="text-zinc-400 font-serif italic text-sm mt-6 tracking-wide">
             Linking Intelligence // Scripting Reality
           </p>
         </header>
 
-        <section className="grid gap-8">
+        <section className="space-y-20">
           {posts.length === 0 ? (
-            <div className="p-10 border border-zinc-800 rounded-3xl bg-zinc-900/30 backdrop-blur-sm shadow-2xl">
-              <div className="animate-pulse flex space-x-4">
-                <div className="flex-1 space-y-4 py-1">
-                  <div className="h-4 bg-zinc-800 rounded w-3/4"></div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-zinc-800 rounded"></div>
-                    <div className="h-4 bg-zinc-800 rounded w-5/6"></div>
-                  </div>
-                </div>
+            // 极简风格的加载态：细线条勾勒，无重阴影
+            <div className="space-y-8">
+              <div className="animate-pulse space-y-4">
+                <div className="h-4 bg-zinc-200 rounded w-1/3"></div>
+                <div className="h-4 bg-zinc-100 rounded w-full"></div>
+                <div className="h-4 bg-zinc-100 rounded w-5/6"></div>
               </div>
-              <p className="text-zinc-500 mt-6 font-mono text-xs text-center">STATUS: STANDBY_FOR_BACKEND_SIGNAL</p>
+              <p className="text-zinc-300 font-mono text-[10px] uppercase tracking-widest text-center">System Initializing...</p>
             </div>
           ) : (
             posts.map((post: any) => (
-              <article key={post.id} className="group p-8 border border-zinc-800 rounded-3xl bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-amber-500/50 transition-all duration-500 cursor-pointer">
-                <h2 className="text-3xl font-bold text-amber-400 mb-4 group-hover:translate-x-2 transition-transform">{post.title}</h2>
-                <p className="text-zinc-400 leading-relaxed text-lg">{post.content}</p>
-                <div className="mt-6 flex items-center text-xs font-mono text-zinc-600">
-                  <span className="mr-4">ENTRY_ID: {post.id}</span>
-                  <span className="h-px flex-1 bg-zinc-800"></span>
+              // 文章卡片：去掉沉重的背景和边框，改用无边框设计，只有悬停时有微妙的偏移
+              <article key={post.id} className="group cursor-pointer">
+                <div className="flex flex-col space-y-4">
+                  {/* ID 编号改为上标形式，增加设计感 */}
+                  <span className="text-[10px] font-mono text-zinc-400 tracking-tighter italic">
+                    NO. {String(post.id).padStart(3, '0')}
+                  </span>
+                  
+                  {/* 标题：加重字重，去掉琥珀色，改为纯黑，增加呼吸感 */}
+                  <h2 className="text-2xl font-semibold text-zinc-900 leading-tight group-hover:text-zinc-500 transition-colors duration-300">
+                    {post.title}
+                  </h2>
+                  
+                  {/* 内容：字间距微调，行高增加，更易阅读 */}
+                  <p className="text-zinc-500 leading-relaxed font-light text-base text-justify">
+                    {post.content}
+                  </p>
+                  
+                  {/* 底部装饰线：只有悬停时才会拉长 */}
+                  <div className="pt-4">
+                    <div className="h-[1px] w-8 bg-zinc-200 group-hover:w-full transition-all duration-700 ease-in-out"></div>
+                  </div>
                 </div>
               </article>
             ))
           )}
         </section>
+
+        {/* 页脚极简装饰 */}
+        <footer className="mt-40 text-center">
+          <p className="text-zinc-300 text-[10px] tracking-[0.5em] uppercase">
+            End of Line
+          </p>
+        </footer>
       </div>
     </main>
   );

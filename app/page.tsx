@@ -1,18 +1,21 @@
-"use client";
-import { useEffect, useState } from 'react';
+// 1. 删掉了 "use client"，这让它变成了一个服务端组件
+// 2. 删掉了 useState 和 useEffect 的导入，因为服务器不需要它们
 
-export default function Home() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    // 逻辑保持不变：部署到 Vercel 后，我们在后台设置这个地址指向 Render 后端
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    
-    fetch(`${apiBaseUrl}/api/posts`)
-      .then(res => res.json())
-      .then(data => setPosts(data))
-      .catch(err => console.log("正在等待 Render 后端大脑响应..."));
-  }, []);
+export default async function Home() {
+  // --- 后端大脑逻辑搬到了这里 ---
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  
+  // 这里的 fetch 是在服务器上执行的。
+  // { cache: 'no-store' } 确保每次访问都去后端拿最新的，而不是看旧缓存。
+  let posts = [];
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/posts`, { cache: 'no-store' });
+    if (res.ok) {
+      posts = await res.json();
+    }
+  } catch (err) {
+    console.error("连接 Render 后端失败:", err);
+  }
 
   return (
     // 极简改动：背景改为极浅灰（zinc-50），文字主色调改为深灰（zinc-900）
